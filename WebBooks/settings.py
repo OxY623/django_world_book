@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 #DEBUG = True
 DEBUG =bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -125,9 +125,9 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 
-#STATICFILES_DIRS = (
-#    os.path.join(BASE_DIR, "static/"),
-#)
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static/"),
+)
 # STATICFILES_DIRS = [
 #    BASE_DIR / "static",
 #    "/var/www/static/",
@@ -144,4 +144,7 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 # Упрощенная обработка статических файлов.
 # https://warehouse.python.org/project/whitenoise/
+
+# settings.py
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
