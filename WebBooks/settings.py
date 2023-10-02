@@ -21,13 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'django-insecure-5sx=%)fzg2xb4@jzc+#mtip2^jz2-ui_5o^8_a1o$i11rhy7yo'
-
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
-                            'django-insecure-5sx=%)fzg2xb4@jzc+#mtip2^jz2-ui_5o^8_a1o$i11rhy7yo')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
+#SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
+#                            'django-insecure-5sx=%)fzg2xb4@jzc+#mtip2^jz2-ui_5o^8_a1o$i11rhy7yo')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
-DEBUG =bool(os.environ.get('DJANGO_DEBUG', True))
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = ['*']
 
@@ -46,7 +46,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+   
+     'whitenoise.middleware.WhiteNoiseMiddleware',
+  	
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,10 +83,20 @@ WSGI_APPLICATION = 'WebBooks.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
+DATABASES = {     
+		'default': {
+      	'ENGINE': 'django.db.backends.postgresql',
+      	'HOST' : os.environ.get('POSTGRES_HOST', 'localhost'),
+      	'NAME': os.environ.get('POSTGRES_DB', 'db_name'),
+      	'USER': os.environ.get('POSTGRES_USER', 'username'),
+      	'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+      	'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
@@ -128,6 +140,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static/"),
 )
+STATIC_URL = 'static/' 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 # STATICFILES_DIRS = [
 #    BASE_DIR / "static",
 #    "/var/www/static/",
@@ -142,6 +157,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
 # Упрощенная обработка статических файлов.
 # https://warehouse.python.org/project/whitenoise/
 
