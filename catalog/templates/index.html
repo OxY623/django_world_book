@@ -1,0 +1,33 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="display-4">Моя главная страница</h1>
+    <p>Добро пожаловать в <em>Мир книг</em>, это очень простой веб-сайт, написанный на Django.<br> Разработан на Python в качестве учебного примера<br> с использованием PyCharm.</p>
+
+    <h2>Динамический контент</h2>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>База данных сайта "Мир книг" содержит следующее количество записей:</p>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Количество книг:</strong> {{ num_books }}</li>
+          <li class="list-group-item"><strong>Количество экземпляров книг:</strong> {{ num_instances }}</li>
+          <li class="list-group-item"><strong>Количество доступных экземпляров книг:</strong> {{ num_instances_available }}</li>
+          <li class="list-group-item"><strong>Количество авторов книг:</strong> {{ num_authors }}</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <p>Количество посещений данной страницы: {{ num_visits }}</p>
+      </div>
+    </div>
+  </div>
+    <script>
+    window.onload = function(){
+        alert('Это один из начальных проектов на Django. Нажмите ОК')
+    }
+
+    </script>
+{% endblock %}
+
+

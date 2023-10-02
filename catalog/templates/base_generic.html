@@ -1,0 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Мир книг{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {#<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">#}
+    {% block extrahead %}
+<!--    <style>
+
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: #222;
+        }
+
+        .navbar-default .navbar-nav > li > a {
+            color: #fff;
+        }
+
+        .navbar-default .navbar-nav > li > a:hover,
+        .navbar-default .navbar-nav > li > a:focus {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .container,
+        .pagination {
+            background-color: #444;
+            color: #fff;
+        }
+
+
+    </style>-->
+
+    {% endblock %}
+    {% block head %}
+        <div class="container">
+            <img src="{% static 'images/logotip.png' %}" style="width: 100px; height: 100px" align="absmiddle">
+            <h1 class="text-primary">Сайт "Мир книг"</h1>
+        </div>
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{% url 'index' %}">Главная страница</a></li>
+                <li class="active"><a href="{% url 'books' %}">Все книги</a></li>
+                <li class="active"><a href="{% url 'authors' %}">Все авторы</a></li>
+                <li class="active"><a href="{% url 'author_add' %}">Редактировать авторов</a></li>
+                <li class="active"><a href="{% url 'create_book' %}">Добавить книгу</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{{ user.get_username }} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            {% if user.bookinstance_set.exists %}
+                                <li><a href="{% url 'my-borrowed'%}">Мои заказы</a></li>
+                            {% endif %}
+                            <li><a href="{% url 'logout' %}?next={{ request.path }}">Выход</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}?next={{ request.path }}">Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3">
+            {% block sidebar %}
+                <div>
+                    <h4>Навигация</h4>
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="active"><a href="{% url 'index' %}">Главная страница</a></li>
+                        <li class="active"><a href="{% url 'books' %}">Все книги</a></li>
+                        <li class="active"><a href="{% url 'authors' %}">Все авторы</a></li>
+                    </ul>
+                </div>
+                <div>
+                    {% if user.is_authenticated %}
+                        <h4>Пользователь: {{ user.get_username }}</h4>
+
+                        {% if user.bookinstance_set.exists %}
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a href="{% url 'my-borrowed'%}">Мои заказы</a></li>
+                            </ul>
+                        {% endif %}
+
+                        <ul class="nav nav-pills nav-stacked">
+                            <li><a href="{% url 'logout' %}?next={{ request.path }}">Выход</a></li>
+                        </ul>
+                    {% else %}
+                        <h4>Авторизация</h4>
+                        <form method="post" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">Имя пользователя:</label>
+                                <input type="text" class="form-control" id="username" name="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Пароль:</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <input type="hidden" name="next" value="{{ request.path }}">
+                            <button type="submit" class="btn btn-default">Вход</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+        <div class="col-sm-9">
+            {% block content %}
+
+            {% endblock %}
+            {% block pagination %}
+                {% if is_paginated %}
+                    <div class="pagination">
+                        <span class="page-links">
+                            {% if page_obj.has_previous %}
+                                <a href="{{ request.path }}?page={{ page_obj.previous_page_number}}">
+                                    Предыдущая
+                                </a>
+                            {% endif %}
+                            <span class="page-current">
+                                Страница {{ page_obj.number }} из {{page_obj.paginator.num_pages}}.
+                            </span>
+                            {% if page_obj.has_next %}
+                                <a href="{{ request.path }}?page={{ page_obj.next_page_number}}">
+                                    Следующая
+                                </a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block footer %}
+                <div class="container">
+                    {% block copyright %}
+                        <hr>
+                        <p>&copy; Мир книг. Все права защищены</p>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
